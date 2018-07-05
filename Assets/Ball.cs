@@ -7,20 +7,17 @@ public class Ball : MonoBehaviour {
     public GameObject player;
     private Transform originalParent;
     private Rigidbody rb;
-    //private bool caught = false;
 
 	// Use this for initialization
 	void Start () {
         rb = GetComponent<Rigidbody>();
         originalParent = transform.parent;
-        //GetComponent<Rigidbody>().velocity = 10 * transform.localScale.x * transform.forward;
         CaughtByPlayer();
 	}
 
     public void CaughtByPlayer() {
         // player takes ownership of ball position
         rb.isKinematic = true;
-        //caught = true;
         transform.SetParent(player.transform);
         transform.localPosition = new Vector3(0, 1f, 0);
         transform.rotation = player.transform.rotation;
@@ -34,12 +31,6 @@ public class Ball : MonoBehaviour {
         transform.SetParent(originalParent);
     }
 
-    //void OnCollisionEnter(Collision otherObj) {
-    //    if (otherObj.gameObject.name == "Player") {
-    //        CaughtByPlayer();
-    //    }
-    //}
-	
 	// Update is called once per frame
 	void Update () {
 	}
