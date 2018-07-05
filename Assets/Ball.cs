@@ -5,6 +5,11 @@ using UnityEngine;
 public class Ball : MonoBehaviour {
 
     public GameObject player;
+
+    public float initialForwardVelocity;
+    public float initialUpwardVelocity;
+    public float yVelocityScale;
+
     private Transform originalParent;
     private Rigidbody rb;
 
@@ -27,7 +32,18 @@ public class Ball : MonoBehaviour {
         // move ball in front of player so player + ball dont collide
         transform.localPosition = transform.forward * 2f;
         rb.isKinematic = false;
-        rb.velocity = transform.forward * 30f;
+
+        var playerVelocity = transform.parent.GetComponent<CharacterController>().velocity;
+
+        // turn z-movement into y-movement
+        // (if player is moving forward - holding up - ball goes up)
+        var ballY = playerVelocity.z * yVelocityScale + initialUpwardVelocity;
+        rb.velocity = new Vector3(
+            playerVelocity.x,
+            ballY,
+            initialForwardVelocity
+        );
+
         transform.SetParent(originalParent);
     }
 
