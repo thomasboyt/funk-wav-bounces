@@ -4,6 +4,12 @@ using UnityEngine.SceneManagement;
 public class Player : MonoBehaviour
 {
     public float speed;
+    public GameObject boundary;
+    private CharacterController characterController;
+
+    void Start() {
+        characterController = GetComponent<CharacterController>();
+    }
 
     void Update() {
         var moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
@@ -21,8 +27,20 @@ public class Player : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
-        GetComponent<CharacterController>().Move(moveDirection * Time.deltaTime);
+        characterController.Move(moveDirection * Time.deltaTime);
+
+        var boundaryCollider = boundary.GetComponent<MeshCollider>();
+        var extents = boundaryCollider.bounds.extents;
+
+        if (transform.position.z > boundary.transform.position.z + extents.z) {
+            var diff = boundary.transform.position.z + extents.z - transform.position.z;
+            characterController.Move(transform.forward * diff);
+        } else if (transform.position.z < boundary.transform.position.z - extents.z) {
+            var diff = transform.position.z - (boundary.transform.position.z - extents.z);
+            characterController.Move(-transform.forward * diff);
+        }
     }
+
 
     // called when player is moving
     void OnControllerColliderHit(ControllerColliderHit hit) {
